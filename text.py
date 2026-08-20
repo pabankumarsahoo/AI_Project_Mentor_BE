@@ -1,4 +1,4 @@
-import pyodbc
+import pyodbc      
 
 server = r"HP\SQLEXPRESS"   # Change if your server name is different
 database = "AIProjectMentor"
@@ -16,7 +16,7 @@ try:
     cursor = connection.cursor()
     cursor.execute("SELECT @@VERSION")
 
-    row = cursor.fetchone()
+
     print("\nSQL Server Version:")
     print(row[0])
 

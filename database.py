@@ -1,38 +1,28 @@
-import urllib.parse
-
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+import pyodbc
 
 server = r"HP\SQLEXPRESS"
 database = "AIProjectMentor"
 
-connection_string = (
-    "DRIVER={ODBC Driver 17 for SQL Server};"
-    f"SERVER={server};"
-    f"DATABASE={database};"
-    "Trusted_Connection=yes;"
-)
+try:
+    connection = pyodbc.connect(
+        "DRIVER={ODBC Driver 17 for SQL Server};"
+        f"SERVER={server};"
+        f"DATABASE={database};"
+        "Trusted_Connection=yes;"
+    )
 
-params = urllib.parse.quote_plus(connection_string)
+    print("✅ SQL Server connection successful!")
 
-DATABASE_URL = f"mssql+pyodbc:///?odbc_connect={params}"
+    cursor = connection.cursor()
+    cursor.execute("SELECT @@VERSION")
 
-engine = create_engine(
-    DATABASE_URL,
-    pool_pre_ping=True,
-)
+    result = cursor.fetchone()
+    print("\nSQL Server Version:")
+    print(result[0])
 
-SessionLocal = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine,
-)
+    connection.close()
+    print("\nConnection closed successfully.")
 
-
-def get_db():
-    db = SessionLocal()
-
-    try:
-        yield db
-    finally:
-        db.close()
+except pyodbc.Error as e:
+    print("❌ SQL Server connection failed!")
+    print("Error:", e)
