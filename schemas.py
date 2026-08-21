@@ -1,33 +1,9 @@
 from datetime import datetime
-<<<<<<< HEAD
-=======
 from typing import Literal
->>>>>>> origin/main
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
-<<<<<<< HEAD
-class ProjectBase(BaseModel):
-	project_name: str = Field(min_length=1, max_length=150)
-	description: str
-	technology_stack: str = Field(min_length=1, max_length=300)
-
-
-class ProjectCreate(ProjectBase):
-	pass
-
-
-class ProjectUpdate(ProjectBase):
-	pass
-
-
-class ProjectResponse(ProjectBase):
-	model_config = ConfigDict(from_attributes=True)
-
-	project_id: int
-	created_at: datetime
-=======
 PriorityValue = Literal[
     "Low",
     "Medium",
@@ -39,7 +15,14 @@ StatusValue = Literal[
     "In Progress",
     "Completed",
 ]
-
+AITaskType = Literal[
+    "Generate Project Plan",
+    "Break Requirement into Tasks",
+    "Recommend Next Task",
+    "Identify Project Blockers",
+    "Explain Implementation",
+    "Generate Testing Checklist",
+]
 
 # ---------------------------------------------------------
 # Project schemas
@@ -124,9 +107,11 @@ class TaskResponse(TaskBase):
 class AIPlanRequest(BaseModel):
     project_id: int = Field(gt=0)
 
-    task_type: str = Field(
-        min_length=2,
-        max_length=100,
+    task_type: AITaskType
+
+    prompt: str = Field(
+        min_length=5,
+        max_length=5000,
     )
 
     prompt: str = Field(
@@ -144,4 +129,3 @@ class AIInteractionResponse(BaseModel):
     ai_response: str
     model_name: str | None = None
     created_at: datetime
->>>>>>> origin/main
